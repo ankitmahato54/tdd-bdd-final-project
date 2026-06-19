@@ -188,6 +188,27 @@ class TestProductRoutes(TestCase):
             data["category"], test_product.category.name
         )
 
+
+    def test_update_product(self):
+        """It should Update a Product"""
+        test_product = self._create_products(1)[0]
+
+        test_product.description = "Updated Description"
+
+        response = self.client.put(
+            f"{BASE_URL}/{test_product.id}",
+            json=test_product.serialize()
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.get_json()
+
+        self.assertEqual(
+            data["description"],
+            "Updated Description"
+        )
+
     ######################################################################
     # Utility functions
     ######################################################################
