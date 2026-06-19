@@ -107,13 +107,17 @@ def list_products():
 
     name = request.args.get("name")
     category = request.args.get("category")
+    available = request.args.get("available")
 
     if name:
         products = Product.find_by_name(name)
 
     elif category:
-        products = Product.find_by_category(
-            Category[category]
+        products = Product.find_by_category(Category[category])
+
+    elif available:
+        products = Product.find_by_availability(
+            available.lower() == "true"
         )
 
     else:
