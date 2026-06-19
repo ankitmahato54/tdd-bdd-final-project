@@ -22,8 +22,8 @@ $(function () {
     function clear_form_data() {
         $("#product_name").val("");
         $("#product_description").val("");
-        $("#product_available").val("");
-        $("#product_category").val("");
+        $("#product_available").val("true");
+        $("#product_category").val("UNKNOWN");
         $("#product_price").val("");
     }
 
@@ -189,7 +189,7 @@ $(function () {
 
         let name = $("#product_name").val();
         let description = $("#product_description").val();
-        let available = $("#product_available").val() == "true";
+        let available = $("#product_available").val();
         let category = $("#product_category").val();
 
         let queryString = ""
@@ -203,17 +203,17 @@ $(function () {
             }
             queryString += 'description=' + description
         }
-        if (available) {
+        if (available != "true" || name == "" && category == "UNKNOWN") {
             if (queryString.length > 0) {
-                queryString += '&'  // add separator
+                queryString += "&";
             }
-            queryString += 'available=' + available
+            queryString += "available=" + available;
         }
-        if (category) {
+        if (category != "UNKNOWN") {
             if (queryString.length > 0) {
-                queryString += '&'  // add separator
+                queryString += "&";
             }
-            queryString += 'category=' + category
+            queryString += "category=" + category;
         }
 
         $("#flash_message").empty();
@@ -262,4 +262,57 @@ $(function () {
 
     });
 
+    // ****************************************
+// List all Products
+// ****************************************
+
+$("#list-btn").click(function () {
+
+    $("#flash_message").empty();
+
+    let ajax = $.ajax({
+        type: "GET",
+        url: "/products",
+        contentType: "application/json",
+        data: ""
+    });
+
+    ajax.done(function(res){
+
+        $("#search_results").empty();
+
+        let table = '<table class="table table-striped">';
+        table += '<thead><tr>';
+        table += '<th>ID</th>';
+        table += '<th>Name</th>';
+        table += '<th>Description</th>';
+        table += '<th>Available</th>';
+        table += '<th>Category</th>';
+        table += '<th>Price</th>';
+        table += '</tr></thead><tbody>';
+
+        for(let i=0;i<res.length;i++){
+            let product = res[i];
+            table += `<tr>
+                <td>${product.id}</td>
+                <td>${product.name}</td>
+                <td>${product.description}</td>
+                <td>${product.available}</td>
+                <td>${product.category}</td>
+                <td>${product.price}</td>
+            </tr>`;
+        }
+
+        table += '</tbody></table>';
+
+        $("#search_results").append(table);
+
+        flash_message("Success");
+    });
+
+    ajax.fail(function(res){
+        flash_message(res.responseJSON.message);
+    });
+
+});
 })
