@@ -106,9 +106,16 @@ def list_products():
     """Returns all Products"""
 
     name = request.args.get("name")
+    category = request.args.get("category")
 
     if name:
         products = Product.find_by_name(name)
+
+    elif category:
+        products = Product.find_by_category(
+            Category[category]
+        )
+
     else:
         products = Product.all()
 
