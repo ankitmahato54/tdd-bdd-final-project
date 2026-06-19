@@ -105,12 +105,14 @@ def create_products():
 def list_products():
     """Returns all Products"""
 
-    products = Product.all()
+    name = request.args.get("name")
 
-    results = []
+    if name:
+        products = Product.find_by_name(name)
+    else:
+        products = Product.all()
 
-    for product in products:
-        results.append(product.serialize())
+    results = [product.serialize() for product in products]
 
     return jsonify(results), status.HTTP_200_OK
 

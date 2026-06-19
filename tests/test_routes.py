@@ -247,6 +247,32 @@ class TestProductRoutes(TestCase):
 
         self.assertEqual(len(data), 5)
 
+    def test_query_product_by_name(self):
+        """It should Query Products by Name"""
+        from urllib.parse import quote_plus
+
+        products = self._create_products(5)
+
+        test_name = products[0].name
+
+        response = self.client.get(
+            BASE_URL,
+            query_string=f"name={quote_plus(test_name)}"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        data = response.get_json()
+
+        for product in data:
+            self.assertEqual(
+                product["name"],
+                test_name
+            )
+
     ######################################################################
     # Utility functions
     ######################################################################
