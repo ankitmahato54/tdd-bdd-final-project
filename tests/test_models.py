@@ -136,3 +136,15 @@ class TestProductModel(unittest.TestCase):
         updated = Product.find(product.id)
         self.assertEqual(updated.id, product.id)
         self.assertEqual(updated.description, "Updated Description")
+
+    def test_delete_a_product(self):
+        """It should Delete a Product"""
+        product = ProductFactory()
+        product.id = None
+        product.create()
+
+        self.assertEqual(len(Product.all()), 1)
+
+        product.delete()
+
+        self.assertEqual(len(Product.all()), 0)
