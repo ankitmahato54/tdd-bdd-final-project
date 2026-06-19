@@ -232,6 +232,21 @@ class TestProductRoutes(TestCase):
         status.HTTP_404_NOT_FOUND
         )
 
+    def test_list_all_products(self):
+        """It should List all Products"""
+        self._create_products(5)
+
+        response = self.client.get(BASE_URL)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        data = response.get_json()
+
+        self.assertEqual(len(data), 5)
+
     ######################################################################
     # Utility functions
     ######################################################################
